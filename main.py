@@ -1,16 +1,17 @@
-# This is a sample Python script.
+import discord
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+TOKEN_FILE = "token.txt"
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# Reads the token from file
+def readDiscordToken():
+    return ""
+
+
+def loadBot():
+    token = readDiscordToken()
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    loadBot()
