@@ -12,7 +12,7 @@ discord_handler = discord.Client(intents=intents)
 def readDiscordToken():
 
     fo = open(TOKEN_FILE, "r")
-    token = fo.read(72)
+    token = fo.read(72) # Size of token
     fo.close()
 
     return token
