@@ -1,13 +1,13 @@
 import discord
 import os
+import asyncio
 
 from discord.ext import commands
 
 # File where it contains private Discord Token
 TOKEN_FILE = "token.txt"
 
-intents = discord.Intents.default()
-intents.message_content = True
+intents = discord.Intents.all()
 
 discord_handler = commands.Bot(command_prefix="/", intents=intents)
 
@@ -28,22 +28,22 @@ def getAllExtensions():
 
 
 # Loads all the extensions from extensions folder
-def loadAllExtensions():
+async def loadAllExtensions():
     for ext in getAllExtensions():
-        discord_handler.load_extension(f'extensions.{ext[:-3]}')
+        await discord_handler.load_extension(f'extensions.{ext[:-3]}')
 
 
 # Unloads all the extensions from extensions folder
-def unloadAllExtensions():
+async def unloadAllExtensions():
     for ext in getAllExtensions():
-        discord_handler.unload_extension(f'extensions.{ext[:-3]}')
+        await discord_handler.unload_extension(f'extensions.{ext[:-3]}')
 
 
 # Starts up the Discord bot and extensions
 def loadBot():
-    discord_handler.run(readDiscordToken())
+    asyncio.run(loadAllExtensions())
 
-    loadAllExtensions()
+    discord_handler.run(readDiscordToken())
 
     print('Bot loaded successfully!')
 
