@@ -33,6 +33,7 @@ async def unloadAllExtensions():
         await discord_handler.unload_extension(f'extensions.{ext}')
 
 
+# Unload command to disable an extension
 @commands.command()
 async def unloadExtension(ctx, arg1):
     if arg1 is None:
@@ -44,9 +45,7 @@ async def unloadExtension(ctx, arg1):
     await discord_handler.unload_extension(f'extensions.{arg1}')
 
 
-# Update Extension command
-# Fetches Extension code from Github repository
-# Unloads extension and rewrites the file with new code
+# Update Extension command to  create or update extension by checking the latest version on github.
 @commands.command()
 async def updateExtension(ctx, name=None):
     if name is None:
@@ -54,6 +53,27 @@ async def updateExtension(ctx, name=None):
         return
 
     await ctx.send(f'Fetching {name} from repository...')
+
+    try:
+
+        updateExtensionFile(name, retriveExtensionCode(name))
+
+        if f'extensions.{name}' in discord_handler.extensions:
+            await ctx.send(f'Reloading extension {name}...')
+            await discord_handler.reload_extension(f'extensions.{name}')
+        else:
+            await ctx.send(f'Creating new extension {name}...')
+            await discord_handler.load_extension(f'extensions.{name}')
+
+        await ctx.send('Done!')
+
+    except urllib.error.HTTPError:
+        await ctx.send(f'File {name} not found on repository')
+    except ExtensionFailed:
+        await ctx.send('Something went wrong while loading the extension')
+
+# Fetches code from github repository
+def retriveExtensionCode(name):
 
     # Headers specified as per documentation.
     # https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
@@ -67,25 +87,7 @@ async def updateExtension(ctx, name=None):
         headers=git_headers)
 
     urlcon = urllib.request.urlopen(git_request)
-
-    try:
-        # Convert the bytes to a UTF-8 string to avoid \n and other characters
-        updateExtensionFile(name, urlcon.read().decode('utf-8'))
-
-        if f'extensions.{name}' in discord_handler.extensions:
-            await ctx.send(f'Reloading extension {name}...')
-            await discord_handler.reload_extension(f'extensions.{name}')
-        else:
-            await ctx.send(f'Loading new extension {name}...')
-            await discord_handler.load_extension(f'extensions.{name}')
-
-        await ctx.send('Done!')
-
-    except urllib.error.HTTPError:
-        await ctx.send(f'File {name} not found on repository')
-    except ExtensionFailed:
-        await ctx.send('Something went wrong while loading the extension')
-
+    return urlcon.read().decode('utf-8')
 
 # Rewrites the extension file code
 def updateExtensionFile(name, code):
