@@ -2,9 +2,10 @@ import discord
 import os
 import asyncio
 import urllib.request
-
+import urllib.error
 
 from discord.ext import commands
+from discord.ext.commands import ExtensionFailed
 
 # File where it contains private Discord Token
 TOKEN_FILE = "token.txt"
@@ -44,7 +45,7 @@ async def unloadExtension(ctx, arg1):
 
 
 # Update Extension command
-# Fetches Extension code from github (raw content raw.github) and
+# Fetches Extension code from Github repository
 # Unloads extension and rewrites the file with new code
 @commands.command()
 async def updateExtension(ctx, name=None):
@@ -54,6 +55,8 @@ async def updateExtension(ctx, name=None):
 
     await ctx.send(f'Fetching {name} from repository...')
 
+    # Headers specified as per documentation.
+    # https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     git_headers = {
         "Accept": "application/vnd.github.raw+json",
         "X-GitHub-Api-Version": "2022-11-28"
@@ -65,8 +68,32 @@ async def updateExtension(ctx, name=None):
 
     urlcon = urllib.request.urlopen(git_request)
 
+    try:
+        # Convert the bytes to a UTF-8 string to avoid \n and other characters
+        updateExtensionFile(name, urlcon.read().decode('utf-8'))
 
-    print(urlcon)
+        if f'extensions.{name}' in discord_handler.extensions:
+            await ctx.send(f'Reloading extension {name}...')
+            await discord_handler.reload_extension(f'extensions.{name}')
+        else:
+            await ctx.send(f'Loading new extension {name}...')
+            await discord_handler.load_extension(f'extensions.{name}')
+
+        await ctx.send('Done!')
+
+    except urllib.error.HTTPError:
+        await ctx.send(f'File {name} not found on repository')
+    except ExtensionFailed:
+        await ctx.send('Something went wrong while loading the extension')
+
+
+# Rewrites the extension file code
+def updateExtensionFile(name, code):
+    fo = open(f'extensions/{name}.py', "w")
+    fo.write(code)
+
+    # Close opened file
+    fo.close()
 
 
 # Starts up the Discord bot and extensions
