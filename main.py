@@ -3,6 +3,7 @@ import os
 import asyncio
 import urllib.request
 
+
 from discord.ext import commands
 
 # File where it contains private Discord Token
@@ -53,10 +54,19 @@ async def updateExtension(ctx, name=None):
 
     await ctx.send(f'Fetching {name} from repository...')
 
-    contents = urllib.request.urlopen(
-        f'https://raw.githubusercontent.com/MicaelOps/CSOC-DiscordBot/master/extensions/{name}.py').read()
+    git_headers = {
+        "Accept": "application/vnd.github.raw+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+    }
 
-    print(contents)
+    git_request = urllib.request.Request(
+        url=f'https://api.github.com/repos/MicaelOps/CSOC-DiscordBot/contents/extensions/{name}.py?ref=master',
+        headers=git_headers)
+
+    urlcon = urllib.request.urlopen(git_request)
+
+
+    print(urlcon)
 
 
 # Starts up the Discord bot and extensions
@@ -82,5 +92,3 @@ def readDiscordToken():
 
 if __name__ == '__main__':
     loadBot()
-
-
