@@ -58,6 +58,7 @@ async def updateExtension(ctx, name=None):
 
         updateExtensionFile(name, retriveExtensionCode(name))
 
+        # Checking if extension has already been loaded
         if f'extensions.{name}' in discord_handler.extensions:
             await ctx.send(f'Reloading extension {name}...')
             await discord_handler.reload_extension(f'extensions.{name}')
@@ -72,9 +73,9 @@ async def updateExtension(ctx, name=None):
     except ExtensionFailed:
         await ctx.send('Something went wrong while loading the extension')
 
+
 # Fetches code from github repository
 def retriveExtensionCode(name):
-
     # Headers specified as per documentation.
     # https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     git_headers = {
@@ -88,6 +89,7 @@ def retriveExtensionCode(name):
 
     urlcon = urllib.request.urlopen(git_request)
     return urlcon.read().decode('utf-8')
+
 
 # Rewrites the extension file code
 def updateExtensionFile(name, code):
