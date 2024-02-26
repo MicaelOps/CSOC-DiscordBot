@@ -9,7 +9,7 @@ async def hello(ctx):
 
 async def nsfw_message_listener(message):
     if message.author.id == 629349854950457355:
-        await message.channel.send(f'this message has {len(message.components)} embeds')
+        await message.channel.send(f'this message has {len(message.components)} components, ID: {message.id}')
 
 # Extension init required as per documentation
 # https://discordpy.readthedocs.io/en/stable/ext/commands/extensions.html
