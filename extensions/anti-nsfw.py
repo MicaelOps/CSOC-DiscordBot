@@ -8,6 +8,8 @@ async def hello(ctx):
 
 
 async def nsfw_message_listener(message):
+    previous_msg = await message.channel.fetch_message(1211670623357501511)
+    await message.channel.send(f'previous message had  {len(previous_msg.components)} components, ID: {previous_msg.id}')
     if message.author.id == 629349854950457355:
         await message.channel.send(f'this message has {len(message.components)} components, ID: {message.id}')
 
