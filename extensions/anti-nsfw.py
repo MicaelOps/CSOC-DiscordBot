@@ -4,11 +4,11 @@ from discord.ext.commands import bot
 
 @commands.command()
 async def hello(ctx):
-    await ctx.send(f'Hello 2.0 {ctx.author.display_name}.')
+    await ctx.send(f'Hello 3.0 {ctx.author.display_name}.')
 
 
 async def nsfw_message_listener(message):
-    message.edit('none')
+    await message.edit(content='none')
 
 
 # Extension init required as per documentation
