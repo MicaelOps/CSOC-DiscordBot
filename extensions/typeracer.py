@@ -50,7 +50,7 @@ async def showLeaderboard(ctx):
     main_embed.add_field(name='top11', value='omg it works')
     main_embed.add_field(name='top101', value='omg it works')
 
-    ctx.channel.send(embed=main_embed)
+    await ctx.channel.send(embed=main_embed)
 
     #for i in range(10):
     #    ctx.bot.get_user(top_ten[0])
