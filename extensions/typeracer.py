@@ -36,7 +36,7 @@ async def startTypingTest(ctx):
 @commands.command()
 async def showLeaderboard(ctx):
     top_ten = heapq.nlargest(10, racer_stats, lambda racer: racer[1])
-
+    print('hello')
     print(len(top_ten))
     main_embed = discord.Embed(colour=discord.Colour.from_rgb(241, 196, 15))
     main_embed.set_author(name='TOP 10 Type racer', url='https://github.com/MicaelOps/CSOC-DiscordBot')
