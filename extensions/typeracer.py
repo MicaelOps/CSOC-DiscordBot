@@ -12,9 +12,7 @@ racer_stats = []
 # Load Type racer stats and push them to a heap
 def loadLeaderboard():
     with open("racerstats.txt", "r") as fo:
-
         for line in fo:
-
             print(line)
 
             token = str.split(line, ':', maxsplit=1)
@@ -25,9 +23,7 @@ def loadLeaderboard():
 # Save Type racer Stats into text file.
 def saveLeaderboard():
     with open("racerstats.txt", "w") as fo:
-
         for i in range(len(racer_stats)):
-
             fo.write(f'{racer_stats[i][0]}:{racer_stats[i][1]}\n')
 
 
@@ -41,18 +37,16 @@ async def startTypingTest(ctx):
 async def showLeaderboard(ctx):
     top_ten = heapq.nlargest(10, racer_stats, lambda racer: racer[1])
 
-    main_embed = discord.Embed()
-    main_embed.set_author(name='Amazing Discord bot', url='https://github.com/MicaelOps/CSOC-DiscordBot')
+    main_embed = discord.Embed(colour=discord.Colour.from_rgb(241, 196, 15))
+    main_embed.set_author(name='TOP 10 Type Racer', url='https://github.com/MicaelOps/CSOC-DiscordBot')
     main_embed.set_footer(text='Understanding this embed shit.')
 
-    main_embed.add_field(name='top10', value='omg it works')
-    main_embed.add_field(name='top1011', value='omg it works')
-    main_embed.add_field(name='top11', value='omg it works')
-    main_embed.add_field(name='top101', value='omg it works')
+    main_embed.insert_field_at(0, name='top10', value='omg it works')
+    main_embed.insert_field_at(3, name='top1011', value='omg it works')
 
     await ctx.channel.send(embed=main_embed)
 
-    #for i in range(10):
+    # for i in range(10):
     #    ctx.bot.get_user(top_ten[0])
 
 
