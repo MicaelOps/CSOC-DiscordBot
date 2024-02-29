@@ -41,8 +41,8 @@ async def showLeaderboard(ctx):
     main_embed.set_author(name='TOP 10 Type Racer', url='https://github.com/MicaelOps/CSOC-DiscordBot')
     main_embed.set_footer(text='Understanding this embed shit.')
 
-    main_embed.insert_field_at(0, name='top10', value='omg it works')
-    main_embed.insert_field_at(3, name='top1011', value='omg it works')
+    main_embed.insert_field_at(0, name='top10', value='omg it works', inline=True)
+    main_embed.insert_field_at(3, name='top1011', value='omg it works', inline=True)
 
     await ctx.channel.send(embed=main_embed)
 
