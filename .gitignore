@@ -5,7 +5,7 @@ __pycache__/
 *$py.class
 
 token.txt
-
+racerstats.txt
 # C extensions
 *.so
 

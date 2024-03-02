@@ -48,6 +48,7 @@ async def unloadExtension(ctx, arg1):
 # Update Extension command to  create or update extension by checking the latest version on github.
 @commands.command()
 async def updateExtension(ctx, name=None):
+
     if name is None:
         await ctx.send('Input the correct name of extension')
         return
@@ -56,7 +57,7 @@ async def updateExtension(ctx, name=None):
 
     try:
 
-        updateExtensionFile(name, retriveExtensionCode(name))
+        updateExtensionFile(name, retrieveExtensionCode(name))
 
         # Checking if extension has already been loaded
         if f'extensions.{name}' in discord_handler.extensions:
@@ -75,7 +76,7 @@ async def updateExtension(ctx, name=None):
 
 
 # Fetches code from github repository
-def retriveExtensionCode(name):
+def retrieveExtensionCode(name):
     # Headers specified as per documentation.
     # https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-repository-content
     git_headers = {
@@ -93,15 +94,13 @@ def retriveExtensionCode(name):
 
 # Rewrites the extension file code
 def updateExtensionFile(name, code):
-    fo = open(f'extensions/{name}.py', "w")
-    fo.write(code)
-
-    # Close opened file
-    fo.close()
+    with open(f'extensions/{name}.py', "w") as fo:
+        fo.write(code)
 
 
 # Starts up the Discord bot and extensions
 def loadBot():
+
     asyncio.run(loadAllExtensions())
 
     discord_handler.add_command(unloadExtension)
@@ -114,11 +113,11 @@ def loadBot():
 
 # Reads the 72 character token from file
 def readDiscordToken():
-    fo = open(TOKEN_FILE, "r")
-    token = fo.read(72)
-    fo.close()
+    with open(TOKEN_FILE, "r") as fo:
+        token = fo.read(72)
+        fo.close()
 
-    return token
+        return token
 
 
 if __name__ == '__main__':
