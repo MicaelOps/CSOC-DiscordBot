@@ -13,9 +13,17 @@ racer_stats = []
 # Fastest typist in the world
 FASTEST_TYPIST_WPM = 262
 
+class TyperacerCog(commands.Cog):
+
+    def __init__(self, bot):
+        self.client = bot
+
+
+    @discord.app_commands.command(name="special")
+    async def special_command(self, interaction: discord.Interaction):
+        await interaction.response.send_modal(TypingModal())
 
 class TypingModal(discord.ui.Modal, title='Typing Test'):
-
     name = discord.ui.TextInput(
         label='Test',
         placeholder='Your text here',
@@ -54,8 +62,7 @@ def loadLeaderboard():
 # Save Type racer Stats into text file.
 def saveLeaderboard():
     with open('racerstats.txt', 'w') as fo:
-        for i in range(len(racer_stats)):
-            fo.write(f'{racer_stats[i][0]}:{racer_stats[i][1]}\n')
+        fo.write('\n'.join(f'{racer[0]}:{racer[1]}' for racer in racer_stats))
 
 
 @commands.command()
@@ -76,7 +83,7 @@ async def showLeaderboard(ctx):
     filled_positions = 0
 
     for racer_index in range(len(top_ten)):
-        top_ten_text = top_ten_text + f'TOP{racer_index + 1} {top_ten[racer_index][0]} - {top_ten[racer_index][1]} WPM \n'
+        top_ten_text = top_ten_text + f'TOP{racer_index + 1} <@{top_ten[racer_index][0]}> - {top_ten[racer_index][1]} WPM \n'
         filled_positions = filled_positions + 1
 
     # Fill the remainder positions in the Top 10
@@ -94,18 +101,17 @@ async def showLeaderboard(ctx):
 
 # Extension init required as per documentation
 # https://discordpy.readthedocs.io/en/stable/ext/commands/extensions.html
-async def setup(bot):
+async def setup(bot: discord.ext.commands.Bot):
     print('Type racer extension loaded')
 
     loadLeaderboard()
 
-    bot.add_command(startTypingTest)
-    bot.add_command(showLeaderboard)
+    await bot.add_cog(TyperacerCog(bot))
 
 
 # Extension stop as per documentation
 # https://discordpy.readthedocs.io/en/stable/ext/commands/extensions.html
-async def teardown(bot):
+async def teardown(bot: discord.ext.commands.Bot):
     print('Type racer extension unloaded')
 
     saveLeaderboard()
